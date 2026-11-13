@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Solicitudes de materiales</h2>
+<table border="1">
+<tr><th>ID</th><th>Técnico</th><th>Pieza</th><th>Cant.</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr>
+{% for s in solicitudes %}
+<tr>
+  <td>{{ s.id }}</td><td>{{ s.tecnico }}</td><td>{{ s.pieza_codigo }}</td>
+  <td>{{ s.cantidad }}</td><td>{{ s.fecha }}</td><td>
+    <span class="estado estado-{{ s.estado|lower }}">{{ s.estado }}</span>
+</td>
+  <td>
+    {% if s.estado == 'Pendiente' %}
+    <form method="POST" action="{{ url_for('gerente_resolver', sid=s.id, accion='aprobar') }}" style="display:inline">
+    <input name="observacion" placeholder="Observación">
+    <button class="exito" type="submit">Aprobar</button>
+</form>
+
+<form method="POST" action="{{ url_for('gerente_resolver', sid=s.id, accion='rechazar') }}" style="display:inline">
+    <input name="observacion" placeholder="Motivo">
+    <button class="peligro" type="submit">Rechazar</button>
+</form>
+    {% else %}{{ s.observacion }}{% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Gestión de piezas</h2>
+
+<table>
+<thead>
+<tr><th>ID</th><th>Nombre</th><th>Código</th><th>Categoría</th>
+    <th>Cant.</th><th>Mín.</th><th>Ubicación</th><th>Acciones</th></tr>
+</thead>
+<tbody>
+{% for p in piezas %}
+<tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.codigo }}</td>
+    <td>{{ p.categoria }}</td>
+    <td>{{ p.cantidad }}</td>
+    <td>{{ p.stock_minimo }}</td>
+    <td>{{ p.ubicacion }}</td>
+    <td>
+        <a href="{{ url_for('admin_editar_pieza', pid=p.id) }}">Editar</a>
+        <a href="{{ url_for('admin_eliminar_pieza', pid=p.id) }}"
+           onclick="return confirm('¿Eliminar?')">Eliminar</a>
+        <button class="chico exito" type="button"
+                onclick="document.getElementById('entrada-{{ p.id }}').style.display='inline-flex'">
+            + Entrada
+        </button>
+        <form id="entrada-{{ p.id }}" method="POST"
+              action="{{ url_for('admin_entrada_stock', pid=p.id) }}"
+              style="display:none">
+            <input name="cantidad" type="number" min="1" placeholder="Cant." required>
+            <input name="motivo" placeholder="Motivo" value="Compra">
+            <button class="chico" type="submit">OK</button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% if pieza_editar %}
+<h3>Editar pieza #{{ pieza_editar.id }}</h3>
+<form method="POST" action="{{ url_for('admin_editar_pieza', pid=pieza_editar.id) }}">
+    <input name="nombre" value="{{ pieza_editar.nombre }}" required>
+    <input name="codigo" value="{{ pieza_editar.codigo }}" required>
+    <input name="categoria" value="{{ pieza_editar.categoria }}" required>
+    <input name="cantidad" type="number" value="{{ pieza_editar.cantidad }}" required>
+    <input name="stock_minimo" type="number" value="{{ pieza_editar.stock_minimo }}" required>
+    <input name="ubicacion" value="{{ pieza_editar.ubicacion }}">
+    <button type="submit">Guardar cambios</button>
+</form>
+{% else %}
+<h3>Registrar nueva pieza</h3>
+<form method="POST" action="{{ url_for('admin_agregar_pieza') }}">
+    <input name="nombre" placeholder="Nombre" required>
+    <input name="codigo" placeholder="Código" required>
+    <input name="categoria" placeholder="Categoría" required>
+    <input name="cantidad" type="number" placeholder="Cantidad" required>
+    <input name="stock_minimo" type="number" placeholder="Stock mínimo" required>
+    <input name="ubicacion" placeholder="Ubicación">
+    <button type="submit">Agregar</button>
+</form>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Administrar usuarios</h2>
+<table border="1">
+<tr><th>ID</th><th>Usuario</th><th>Rol</th><th>Acción</th></tr>
+{% for u in usuarios %}
+<tr><td>{{ u.id }}</td><td>{{ u.username }}</td><td>{{ u.rol }}</td>
+    <td><a href="{{ url_for('admin_eliminar_usuario', uid=u.id) }}">Eliminar</a></td></tr>
+{% endfor %}
+</table>
+<h3>Agregar usuario</h3>
+<form method="POST" action="{{ url_for('admin_agregar_usuario') }}">
+    <input name="username" placeholder="Usuario" required>
+    <input name="password" type="password" placeholder="Contraseña" required>
+    <select name="rol">
+        <option>Administrador</option><option>Gerente</option><option>Técnico</option>
+    </select>
+    <button>Crear</button>
+</form>
+{% endblock %}

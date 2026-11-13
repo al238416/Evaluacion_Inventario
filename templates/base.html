@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Inventario Industrial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    {% if current_user.rol == 'Administrador' %}
+        <a href="{{ url_for('admin_piezas') }}">Piezas</a>
+        <a href="{{ url_for('admin_usuarios') }}">Usuarios</a>
+        <a href="{{ url_for('movimientos') }}">Movimientos</a>
+        <a href="{{ url_for('alertas') }}">Alertas</a>
+    {% elif current_user.rol == 'Gerente' %}
+        <a href="{{ url_for('gerente_solicitudes') }}">Solicitudes</a>
+        <a href="{{ url_for('gerente_reportes') }}">Reportes</a>
+        <a href="{{ url_for('movimientos') }}">Movimientos</a>
+        <a href="{{ url_for('alertas') }}">Alertas</a>
+    {% elif current_user.rol == 'Técnico' %}
+        <a href="{{ url_for('tecnico_solicitar') }}">Mis solicitudes</a>
+        <a href="{{ url_for('alertas') }}">Alertas</a>
+    {% endif %}
+    <span>{{ current_user.username }} — {{ current_user.rol }}</span>
+    <a href="{{ url_for('logout') }}">Salir</a>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+        <div class="alert-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+{% endwith %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

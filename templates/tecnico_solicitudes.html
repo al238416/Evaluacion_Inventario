@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Piezas disponibles</h2>
+<table>
+<thead>
+<tr><th>Nombre</th><th>Código</th><th>Categoría</th>
+    <th>Cantidad</th><th>Ubicación</th><th>Estado</th></tr>
+</thead>
+<tbody>
+{% for p in piezas %}
+<tr>
+    <td>{{ p.nombre }}</td><td>{{ p.codigo }}</td><td>{{ p.categoria }}</td>
+    <td>{{ p.cantidad }}</td><td>{{ p.ubicacion }}</td>
+    <td>
+        {% if p.cantidad == 0 %}
+            <span class="estado estado-rechazada">Agotada</span>
+        {% elif p.cantidad <= p.stock_minimo %}
+            <span class="estado estado-pendiente">Bajo</span>
+        {% else %}
+            <span class="estado estado-aprobada">Disponible</span>
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<h3>Solicitar material</h3>
+<form method="POST">
+    <input name="codigo" placeholder="Código de pieza" required>
+    <input name="cantidad" type="number" placeholder="Cantidad" required>
+    <button>Solicitar</button>
+</form>
+
+<h3>Mis solicitudes</h3>
+<table border="1">
+<tr><th>ID</th><th>Pieza</th><th>Cant.</th><th>Fecha</th><th>Estado</th><th>Observación</th></tr>
+{% for s in solicitudes %}
+<tr><td>{{ s.id }}</td><td>{{ s.pieza_codigo }}</td><td>{{ s.cantidad }}</td>
+    <td>{{ s.fecha }}</td><td>
+    <span class="estado estado-{{ s.estado|lower }}">{{ s.estado }}</span>
+</td><td>{{ s.observacion }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

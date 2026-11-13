@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Inventario disponible</h2>
+
+{% if alertas %}
+<div class="alert-warning">
+    <strong>⚠ {{ alertas|length }} pieza(s) con stock bajo o agotado:</strong>
+    {{ alertas|map(attribute='codigo')|join(', ') }}
+</div>
+{% endif %}
+
+<form method="GET" action="{{ url_for('dashboard') }}">
+    <input name="q" value="{{ q }}" placeholder="Buscar por nombre, código, categoría o ubicación...">
+    <button type="submit">Buscar</button>
+    {% if q %}<a href="{{ url_for('dashboard') }}" class="btn btn-advertencia">Limpiar</a>{% endif %}
+</form>
+
+<table>
+<thead>
+<tr>
+    <th>Nombre</th><th>Código</th><th>Categoría</th>
+    <th>Cantidad</th><th>Mín.</th><th>Ubicación</th><th>Estado</th>
+</tr>
+</thead>
+<tbody>
+{% for p in piezas %}
+<tr>
+    <td>{{ p.nombre }}</td>
+    <td>{{ p.codigo }}</td>
+    <td>{{ p.categoria }}</td>
+    <td>{{ p.cantidad }}</td>
+    <td>{{ p.stock_minimo }}</td>
+    <td>{{ p.ubicacion }}</td>
+    <td>
+        {% if p.cantidad == 0 %}
+            <span class="estado estado-rechazada">Agotada</span>
+        {% elif p.cantidad <= p.stock_minimo %}
+            <span class="estado estado-pendiente">Bajo</span>
+        {% else %}
+            <span class="estado estado-aprobada">OK</span>
+        {% endif %}
+    </td>
+</tr>
+{% else %}
+<tr><td colspan="7" class="text-center suave">Sin resultados para "{{ q }}"</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

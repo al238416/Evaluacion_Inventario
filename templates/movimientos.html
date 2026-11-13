@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Movimientos de inventario</h2>
+
+<form method="GET">
+    <input name="codigo" value="{{ filtro }}" placeholder="Filtrar por código (ej. TORN-001)">
+    <button type="submit">Filtrar</button>
+    {% if filtro %}<a href="{{ url_for('movimientos') }}" class="btn btn-advertencia">Limpiar</a>{% endif %}
+</form>
+
+<table>
+<thead>
+<tr><th>ID</th><th>Fecha</th><th>Tipo</th><th>Código</th>
+    <th>Cantidad</th><th>Usuario</th><th>Motivo</th></tr>
+</thead>
+<tbody>
+{% for m in movimientos|reverse %}
+<tr>
+    <td>{{ m.id }}</td>
+    <td>{{ m.fecha }}</td>
+    <td>
+        {% if m.tipo == 'ENTRADA' %}
+            <span class="estado estado-aprobada">ENTRADA</span>
+        {% else %}
+            <span class="estado estado-rechazada">SALIDA</span>
+        {% endif %}
+    </td>
+    <td>{{ m.codigo }}</td>
+    <td>{{ m.cantidad }}</td>
+    <td>{{ m.usuario }}</td>
+    <td>{{ m.motivo }}</td>
+</tr>
+{% else %}
+<tr><td colspan="7" class="text-center suave">Sin movimientos registrados</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}
